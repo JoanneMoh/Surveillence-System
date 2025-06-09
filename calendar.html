@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calendar - New Subscribers MRR</title>
+  <style>
+    body {
+      background: #181c23;
+      color: #f3f4f6;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: #232834;
+      border-radius: 16px;
+      padding: 32px 32px 24px 32px;
+      box-shadow: 0 2px 8px #0002;
+      border: 1px solid #2d3340;
+      max-width: 480px;
+      width: 100%;
+    }
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+      color: #60a5fa;
+    }
+    .desc {
+      color: #a1a1aa;
+      font-size: 1rem;
+      margin-bottom: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="card-title">Calendar</div>
+    <div class="desc">New subscribers MRR (monthly)</div>
+    <canvas id="calendarChart" width="400" height="200" style="width:100%;max-width:100%;background:transparent;"></canvas>
+  </div>
+  <script>
+    const calendarCtx = document.getElementById('calendarChart').getContext('2d');
+    function drawCalendarChart(ctx) {
+      ctx.clearRect(0,0,400,200);
+      // Axes
+      ctx.strokeStyle = '#2d3340';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(50,20); ctx.lineTo(50,180); ctx.lineTo(380,180);
+      ctx.stroke();
+      // Y labels
+      ctx.fillStyle = '#a1a1aa';
+      ctx.font = '14px Segoe UI';
+      ctx.fillText('$30K', 10, 40);
+      ctx.fillText('$20K', 10, 90);
+      ctx.fillText('$10K', 10, 140);
+      ctx.fillText('$0', 24, 190);
+      // X labels
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      for(let i=0;i<12;i++) {
+        ctx.fillText(months[i], 60+i*27, 195);
+      }
+      // Data (sample, similar to image)
+      const bars = [9000, 11000, 12000, 15000, 13000, 17000, 18000, 21000, 16000, 20000, 22000, 25000];
+      // Bars
+      for(let i=0;i<bars.length;i++) {
+        let x = 50 + i*27;
+        let y = 180 - bars[i]/30000*140;
+        let h = bars[i]/30000*140;
+        ctx.fillStyle = '#60a5fa';
+        ctx.fillRect(x+4, y, 18, h);
+      }
+    }
+    drawCalendarChart(calendarCtx);
+  </script>
+</body>
+</html>

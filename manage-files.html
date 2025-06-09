@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AiWatchMan - Manage Files</title>
+  <style>
+    body {
+      background: #181c23;
+      color: #f3f4f6;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .card {
+      background: #232834;
+      border-radius: 16px;
+      padding: 32px 32px 24px 32px;
+      box-shadow: 0 2px 8px #0002;
+      border: 1px solid #2d3340;
+      max-width: 600px;
+      width: 100%;
+      margin-top: 48px;
+    }
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+      color: #60a5fa;
+    }
+    .desc {
+      color: #a1a1aa;
+      font-size: 1rem;
+      margin-bottom: 18px;
+    }
+    .file-list {
+      margin-top: 18px;
+      background: #1e232b;
+      border-radius: 8px;
+      padding: 16px;
+      border: 1px solid #2d3340;
+    }
+    .file-item {
+      padding: 8px 0;
+      border-bottom: 1px solid #2d3340;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .file-item:last-child { border-bottom: none; }
+    .file-icon {
+      color: #60a5fa;
+      font-size: 1.2rem;
+    }
+    .file-name {
+      flex: 1;
+    }
+    .file-action {
+      color: #4ade80;
+      cursor: pointer;
+      font-size: 0.98rem;
+      border: none;
+      background: none;
+      margin-left: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="card-title">Manage Files</div>
+    <div class="desc">View, download, or delete your files. (Demo content)</div>
+    <div class="file-list">
+      <div class="file-item"><span class="file-icon">📄</span><span class="file-name">report_june2025.pdf</span><button class="file-action">Download</button><button class="file-action">Delete</button></div>
+      <div class="file-item"><span class="file-icon">📄</span><span class="file-name">camera_log.csv</span><button class="file-action">Download</button><button class="file-action">Delete</button></div>
+      <div class="file-item"><span class="file-icon">📄</span><span class="file-name">activity_2025-06-07.txt</span><button class="file-action">Download</button><button class="file-action">Delete</button></div>
+    </div>
+  </div>
+</body>
+</html>

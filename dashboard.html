@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donezo Dashboard - Dark Mode</title>
+  <style>
+    :root {
+      --bg-main: #181c23;
+      --bg-sidebar: #1e232b;
+      --bg-card: #232834;
+      --accent: #4ade80;
+      --accent2: #60a5fa;
+      --text-main: #f3f4f6;
+      --text-secondary: #a1a1aa;
+      --border: #2d3340;
+      --danger: #f87171;
+      --warning: #fbbf24;
+      --pending: #facc15;
+      --success: #34d399;
+      --scrollbar: #232834;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 240px;
+      background: var(--bg-sidebar);
+      padding: 32px 16px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      border-right: 1px solid var(--border);
+    }
+    .sidebar .logo {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--accent);
+      margin-bottom: 32px;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+    }
+    .sidebar nav {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .sidebar nav a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 1.08rem;
+      padding: 10px 18px;
+      border-radius: 8px;
+      transition: background 0.2s, color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sidebar nav a.active, .sidebar nav a:hover {
+      background: var(--accent2);
+      color: #fff;
+    }
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      background: var(--bg-main);
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 36px 0 36px;
+    }
+    .user {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .user .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--accent2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #fff;
+    }
+    .user .info {
+      display: flex;
+      flex-direction: column;
+      font-size: 0.95rem;
+    }
+    .dashboard {
+      flex: 1;
+      padding: 24px 36px 36px 36px;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 32px;
+      min-width: 0;
+    }
+    .dashboard-main {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto auto 1fr;
+      gap: 24px;
+    }
+    .card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 8px #0002;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      min-width: 0;
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--accent);
+    }
+    .stats {
+      display: flex;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .stat {
+      flex: 1;
+      background: #232834;
+      border-radius: 10px;
+      padding: 16px 12px;
+      text-align: center;
+      color: var(--text-main);
+      border: 1px solid var(--border);
+    }
+    .stat .num {
+      font-size: 2.1rem;
+      font-weight: bold;
+      color: var(--accent2);
+    }
+    .stat .desc {
+      font-size: 1rem;
+      color: var(--text-secondary);
+    }
+    .analytics {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 60px;
+      margin-bottom: 10px;
+    }
+    .analytics-bar {
+      width: 18px;
+      border-radius: 6px 6px 0 0;
+      background: var(--accent2);
+      transition: height 0.3s;
+    }
+    .analytics-bar.inactive {
+      background: var(--border);
+    }
+    .reminder {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .reminder .meeting {
+      font-size: 1.05rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .reminder .time {
+      color: var(--text-secondary);
+      font-size: 0.98rem;
+    }
+    .reminder button {
+      background: var(--accent2);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+    .progress {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .progress-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: conic-gradient(var(--accent) 0% 41%, var(--border) 41% 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--accent);
+      margin-right: 10px;
+    }
+    .progress-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 1rem;
+    }
+    .progress-info span {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+    .team {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .team-member {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #232834;
+      border-radius: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+    }
+    .team-member .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--accent2);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    .team-member .info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      font-size: 0.98rem;
+    }
+    .team-member .status {
+      font-size: 0.92rem;
+      font-weight: 500;
+      padding: 2px 10px;
+      border-radius: 6px;
+      margin-left: 8px;
+      background: var(--bg-main);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+    .team-member .status.inprogress {
+      color: var(--warning);
+      border-color: var(--warning);
+    }
+    .team-member .status.pending {
+      color: var(--pending);
+      border-color: var(--pending);
+    }
+    .dashboard-side {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .project-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .project-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1rem;
+      background: #232834;
+      border-radius: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+    }
+    .project-item .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    .project-item .dot.blue { background: var(--accent2); }
+    .project-item .dot.green { background: var(--accent); }
+    .project-item .dot.yellow { background: var(--warning); }
+    .project-item .dot.red { background: var(--danger); }
+    .project-item .dot.purple { background: #a78bfa; }
+    .project-item .date {
+      margin-left: auto;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+    .time-tracker {
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80') center/cover;
+      border-radius: 16px;
+      padding: 24px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 140px;
+      position: relative;
+      box-shadow: 0 2px 8px #0004;
+    }
+    .time-tracker .timer {
+      font-size: 2.2rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 8px #000a;
+    }
+    .time-tracker .controls {
+      display: flex;
+      gap: 16px;
+    }
+    .time-tracker button {
+      background: rgba(24,28,35,0.8);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .time-tracker button:hover {
+      background: var(--accent2);
+      color: #fff;
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+      background: var(--scrollbar);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 8px;
+    }
+    @media (max-width: 1200px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+      .dashboard-main {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 900px) {
+      .sidebar { width: 60px; padding: 16px 4px; }
+      .sidebar .logo, .sidebar .download, .sidebar nav a span { display: none; }
+      .sidebar nav a { justify-content: center; padding: 10px 0; }
+      .main { padding-left: 0; }
+      .dashboard-main { grid-template-columns: 1fr; }
+      .dashboard { padding: 16px; }
+      .topbar { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <div class="logo"> <span>🦉</span> <span>AiWatchMan</span> </div>
+      <nav>
+        <a href="dashboard.html" class="active">🏠 <span>Dashboard</span></a>
+        <a href="analytics.html">📊 <span>Analytics</span></a>
+        <a href="manage-files.html">🗂 <span>Manage Files</span></a>
+        <a href="calendar.html">📅 <span>Calendar</span></a>
+        <a href="team.html">👥 <span>Team</span></a>
+        <div style="margin-top: 24px;"></div>
+        <a href="settings.html">⚙️ <span>Settings</span></a>
+        <a href="#">❓ <span>Help</span></a>
+        <a href="logout.html">🚪 <span>Logout</span></a>
+      </nav>
+    </aside>
+    <main class="main">
+      <div class="topbar">
+        <div style="font-size:2.1rem; font-weight:bold; color:#fff; letter-spacing:1px;">Intelligent Surveillance System Dashboard</div>
+        <div class="user">
+          <div class="avatar" id="userAvatar">AD</div>
+          <div class="info">
+            <span id="userName">Alexandra Deff</span>
+            <span id="userEmail" style="color:var(--text-secondary); font-size:0.95em;">alexandradeff@mail.com</span>
+          </div>
+        </div>
+      </div>
+      <div class="dashboard">
+        <section class="dashboard-main" style="display: flex; flex-direction: column; gap: 28px;">
+          <!-- Photo Feed Row: full width, no sidebars -->
+          <div id="photoFeedRow" style="display: flex; gap: 24px; width: 100%; margin-bottom: 24px;">
+            <div style="flex:1; height:180px; border-radius:18px; overflow:hidden; background:#232834; display:flex; align-items:center; justify-content:center;">
+              <img src="https://images.pexels.com/photos/325153/pexels-photo-325153.jpeg?auto=compress&w=400&q=80" style="width:100%; height:100%; object-fit:cover; border-radius:18px;" alt="feed1" />
+            </div>
+            <div style="flex:1; height:180px; border-radius:18px; overflow:hidden; background:#232834; display:flex; align-items:center; justify-content:center;">
+              <img src="https://images.pexels.com/photos/210182/pexels-photo-210182.jpeg?auto=compress&w=400&q=80" style="width:100%; height:100%; object-fit:cover; border-radius:18px;" alt="feed2" />
+            </div>
+            <div style="flex:1; height:180px; border-radius:18px; overflow:hidden; background:#232834; display:flex; align-items:center; justify-content:center;">
+              <img src="https://images.pexels.com/photos/358574/pexels-photo-358574.jpeg?auto=compress&w=400&q=80" style="width:100%; height:100%; object-fit:cover; border-radius:18px;" alt="feed3" />
+            </div>
+            <div style="flex:1; height:180px; border-radius:18px; overflow:hidden; background:#232834; display:flex; align-items:center; justify-content:center;">
+              <img src="https://images.pexels.com/photos/358574/pexels-photo-358574.jpeg?auto=compress&w=400&q=80" style="width:100%; height:100%; object-fit:cover; border-radius:18px;" alt="feed4" />
+            </div>
+          </div>
+          <!-- Today's Alerts Chart: Full width, bigger -->
+          <div style="width: 100%;">
+            <div class="card" style="padding-bottom:18px; width:100%; height:320px;">
+              <div class="card-title">Today's Alerts</div>
+              <canvas id="alertsLineChart" width="1200" height="260" style="width:100%; height:220px; max-width:100%; background:transparent;"></canvas>
+              <div style="display:flex; gap:18px; margin-top:10px;">
+                <span style="display:flex; align-items:center; gap:6px;"><span style="width:12px;height:12px;border-radius:50%;background:#fca5a5;display:inline-block;"></span>Human</span>
+                <span style="display:flex; align-items:center; gap:6px;"><span style="width:12px;height:12px;border-radius:50%;background:#fde68a;display:inline-block;"></span>Non Human</span>
+              </div>
+            </div>
+          </div>
+          <!-- Main Chart/Info Row: Alerts by buildings + Number of Detections -->
+          <div style="display: flex; gap: 24px; width: 100%;">
+            <!-- Left Column: Alerts by buildings -->
+            <div style="flex:2; display:flex; flex-direction:column; gap:24px;">
+              <div class="card" style="padding-bottom:18px;">
+                <div class="card-title">Alerts by buildings</div>
+                <canvas id="alertsBarChart" width="600" height="180" style="width:100%; max-width:100%; background:transparent;"></canvas>
+                <div style="display:flex; gap:18px; margin-top:10px;">
+                  <span style="display:flex; align-items:center; gap:6px;"><span style="width:12px;height:12px;border-radius:50%;background:#fca5a5;display:inline-block;"></span>Human</span>
+                  <span style="display:flex; align-items:center; gap:6px;"><span style="width:12px;height:12px;border-radius:50%;background:#fde68a;display:inline-block;"></span>Non Human</span>
+                </div>
+              </div>
+            </div>
+            <!-- Right Column: Number of Detections -->
+            <div style="flex:1; display:flex; flex-direction:column; gap:24px;">
+              <div class="card" style="margin-bottom:24px;">
+                <div class="card-title">Number of Detections</div>
+                <canvas id="usersDonutChart" width="260" height="180" style="width:100%; max-width:100%; background:transparent;"></canvas>
+                <div style="display:flex; gap:18px; margin-top:10px;">
+                  <span style="display:flex; align-items:center; gap:6px;"><span style="width:12px;height:12px;border-radius:50%;background:#fca5a5;display:inline-block;"></span>Human</span>
+                  <span style="display:flex; align-items:center; gap:6px;"><span style="width:12px;height:12px;border-radius:50%;background:#fde68a;display:inline-block;"></span>Non Human</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Activity Log (unchanged, below) -->
+          <div class="card" style="grid-column: span 3; margin-top:18px;">
+            <div class="card-title">Activity Log</div>
+            <div class="activity-log">
+              <table style="width:100%; border-collapse:collapse; color:var(--text-main);">
+                <thead>
+                  <tr style="background:var(--bg-sidebar);">
+                    <th style="padding:8px 6px; text-align:left; color:var(--accent);">#</th>
+                    <th style="padding:8px 6px; text-align:left; color:var(--accent);">Date</th>
+                    <th style="padding:8px 6px; text-align:left; color:var(--accent);">Time</th>
+                    <th style="padding:8px 6px; text-align:left; color:var(--accent);">Location</th>
+                    <th style="padding:8px 6px; text-align:left; color:var(--accent);">Activity</th>
+                  </tr>
+                </thead>
+                <tbody id="activityLogBody">
+                  <!-- Activity rows will be inserted here by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+        <aside class="dashboard-side">
+          <!-- Recent Alerts now in the sidebar -->
+          <div class="card" style="margin-bottom:24px;">
+            <div class="card-title">Recent Alerts</div>
+            <div id="recentAlertsList" style="display:flex; flex-direction:column; gap:12px;"></div>
+          </div>
+          <!-- Time Tracker remains below -->
+          <div class="time-tracker card">
+            <div class="timer" id="timer">01:24:08</div>
+            <div class="controls">
+              <button id="startBtn" title="Start">▶️</button>
+              <button id="pauseBtn" title="Pause">⏸️</button>
+              <button id="resetBtn" title="Reset">⏹️</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+  <script>
+    // Redirect to login if not logged in
+    if (!localStorage.getItem('username')) {
+      window.location.href = 'login.html';
+    }
+
+    // Time Tracker Logic
+    let timerInterval;
+    let totalSeconds = 1 * 3600 + 24 * 60 + 8; // 1:24:08
+    let running = false;
+    const timerEl = document.getElementById('timer');
+    const startBtn = document.getElementById('startBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    function updateTimer() {
+      let h = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+      let m = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+      let s = (totalSeconds % 60).toString().padStart(2, '0');
+      timerEl.textContent = `${h}:${m}:${s}`;
+    }
+    function startTimer() {
+      if (running) return;
+      running = true;
+      timerInterval = setInterval(() => {
+        totalSeconds++;
+        updateTimer();
+      }, 1000);
+    }
+    function pauseTimer() {
+      running = false;
+      clearInterval(timerInterval);
+    }
+    function resetTimer() {
+      running = false;
+      clearInterval(timerInterval);
+      totalSeconds = 0;
+      updateTimer();
+    }
+    startBtn.onclick = startTimer;
+    pauseBtn.onclick = pauseTimer;
+    resetBtn.onclick = resetTimer;
+    updateTimer();
+
+    // Activity Log Data
+    const activityLog = [
+      { date: '2025-06-06', time: '09:12', location: 'Main Entrance', activity: 'Human Detected' },
+      { date: '2025-06-06', time: '09:15', location: 'Lobby', activity: 'Non-Human Detected' },
+      { date: '2025-06-06', time: '09:20', location: 'Server Room', activity: 'Human Detected' },
+      { date: '2025-06-06', time: '09:25', location: 'Parking Lot', activity: 'Non-Human Detected' },
+      { date: '2025-06-06', time: '09:30', location: 'Main Entrance', activity: 'Human Detected' },
+    ];
+    function renderActivityLog() {
+      const tbody = document.getElementById('activityLogBody');
+      tbody.innerHTML = '';
+      activityLog.forEach((log, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style='padding:6px 4px;'>${idx + 1}</td>
+          <td style='padding:6px 4px;'>${log.date}</td>
+          <td style='padding:6px 4px;'>${log.time}</td>
+          <td style='padding:6px 4px;'>${log.location}</td>
+          <td style='padding:6px 4px; color:${log.activity === 'Human Detected' ? 'var(--success)' : 'var(--warning)'};'>${log.activity}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+    renderActivityLog();
+
+    // --- Dashboard Main Content Charts & Recent Alerts ---
+    document.addEventListener('DOMContentLoaded', function() {
+      // Standardized keys: 'Human' and 'Non Human'
+
+      // Today's Alerts Line Chart (time-based x-axis, larger)
+      const alertsLineCtx = document.getElementById('alertsLineChart').getContext('2d');
+      function drawAlertsLineChart(ctx) {
+        ctx.clearRect(0,0,1200,260);
+        // Axes
+        ctx.strokeStyle = '#2d3340';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(60,30); ctx.lineTo(60,220); ctx.lineTo(1150,220);
+        ctx.stroke();
+        // Y labels
+        ctx.fillStyle = '#a1a1aa';
+        ctx.font = '15px Segoe UI';
+        ctx.fillText('0', 32, 220);
+        ctx.fillText('10', 24, 170);
+        ctx.fillText('20', 24, 120);
+        ctx.fillText('30', 24, 70);
+        ctx.fillText('40', 24, 30);
+        // X labels (time of day, spread wider)
+        const times = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'];
+        for(let i=0;i<12;i++) {
+          ctx.fillText(times[i], 80+i*90, 245);
+        }
+        // Data (standardized: Human, Non Human)
+        const alertsData = {
+          'Human':   [3, 4, 6, 8, 10, 12, 14, 13, 12, 10, 8, 6],
+          'Non Human': [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+        };
+        const colors = ['#fca5a5','#fde68a'];
+        const keys = Object.keys(alertsData);
+        for(let s=0;s<keys.length;s++) {
+          ctx.strokeStyle = colors[s];
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          for(let i=0;i<12;i++) {
+            let x = 60 + i*90;
+            let y = 220 - alertsData[keys[s]][i]*4.5;
+            if(i===0) ctx.moveTo(x,y);
+            else ctx.lineTo(x,y);
+          }
+          ctx.stroke();
+          // Dots
+          ctx.fillStyle = colors[s];
+          for(let i=0;i<12;i++) {
+            let x = 60 + i*90;
+            let y = 220 - alertsData[keys[s]][i]*4.5;
+            ctx.beginPath(); ctx.arc(x,y,4,0,2*Math.PI); ctx.fill();
+          }
+        }
+      }
+      drawAlertsLineChart(alertsLineCtx);
+
+      // Alerts by Buildings Bar Chart (standardized)
+      const alertsBarCtx = document.getElementById('alertsBarChart').getContext('2d');
+      function drawAlertsBarChart(ctx) {
+        ctx.clearRect(0,0,600,180);
+        // Axes
+        ctx.strokeStyle = '#2d3340';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(40,20); ctx.lineTo(40,160); ctx.lineTo(580,160);
+        ctx.stroke();
+        // Y labels
+        ctx.fillStyle = '#a1a1aa';
+        ctx.font = '13px Segoe UI';
+        ctx.fillText('0', 12, 160);
+        ctx.fillText('10', 8, 120);
+        ctx.fillText('20', 8, 80);
+        ctx.fillText('30', 8, 40);
+        ctx.fillText('40', 8, 20);
+        // X labels & bars
+        const buildings = ['A','B','C','D','E','F','G','H'];
+        const alertsByBuilding = {
+          'Human':   [12, 18, 10, 8, 15, 20, 13, 9],
+          'Non Human': [8, 10, 6, 12, 7, 9, 11, 5]
+        };
+        const colors = ['#fca5a5','#fde68a'];
+        const keys = Object.keys(alertsByBuilding);
+        for(let i=0;i<buildings.length;i++) {
+          for(let k=0;k<keys.length;k++) {
+            ctx.fillStyle = colors[k];
+            ctx.fillRect(55+i*60+15*k, 160-alertsByBuilding[keys[k]][i]*3, 12, alertsByBuilding[keys[k]][i]*3);
+          }
+          ctx.fillStyle = '#a1a1aa';
+          ctx.fillText(buildings[i], 70+i*60, 175);
+        }
+      }
+      drawAlertsBarChart(alertsBarCtx);
+
+      // Number of Detections Donut Chart (unchanged)
+      const usersDonutCtx = document.getElementById('usersDonutChart').getContext('2d');
+      function drawUsersDonutChart(ctx) {
+        ctx.clearRect(0,0,260,180);
+        const total = 32+8;
+        const human = 32, nonhuman = 8;
+        const colors = ['#fca5a5','#fde68a'];
+        let start = -0.5*Math.PI;
+        let end = start + (human/total)*2*Math.PI;
+        ctx.beginPath();
+        ctx.moveTo(130,90);
+        ctx.arc(130,90,70,start,end);
+        ctx.closePath();
+        ctx.fillStyle = colors[0];
+        ctx.fill();
+        start = end;
+        end = start + (nonhuman/total)*2*Math.PI;
+        ctx.beginPath();
+        ctx.moveTo(130,90);
+        ctx.arc(130,90,70,start,end);
+        ctx.closePath();
+        ctx.fillStyle = colors[1];
+        ctx.fill();
+        // Donut hole
+        ctx.beginPath();
+        ctx.arc(130,90,40,0,2*Math.PI);
+        ctx.fillStyle = '#181c23';
+        ctx.fill();
+        // Labels (centered)
+        ctx.font = 'bold 18px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#fca5a5';
+        ctx.fillText(human, 120, 90);
+        ctx.fillStyle = '#fde68a';
+        ctx.fillText(nonhuman, 150, 90);
+        ctx.textAlign = 'start';
+        ctx.textBaseline = 'alphabetic';
+      }
+      drawUsersDonutChart(usersDonutCtx);
+
+      // Recent Alerts List (standardized)
+      const recentAlerts = [
+        { type: 'Human', location: 'Building A', time: '09:12', color: '#fca5a5' },
+        { type: 'Non Human', location: 'Parking Lot', time: '09:15', color: '#fde68a' },
+        { type: 'Human', location: 'Building C', time: '09:20', color: '#fca5a5' },
+        { type: 'Non Human', location: 'Building D', time: '09:25', color: '#fde68a' },
+        { type: 'Human', location: 'Main Entrance', time: '09:30', color: '#fca5a5' },
+      ];
+      const recentAlertsList = document.getElementById('recentAlertsList');
+      recentAlertsList.innerHTML = '';
+      recentAlerts.forEach(alert => {
+        const div = document.createElement('div');
+        div.style.display = 'flex';
+        div.style.alignItems = 'center';
+        div.style.gap = '10px';
+        div.innerHTML = `<span style="width:12px;height:12px;border-radius:50%;background:${alert.color};display:inline-block;"></span>
+          <span style="color:#fff;min-width:90px;">${alert.type}</span>
+          <span style="color:#a1a1aa;">${alert.location}</span>
+          <span style="color:#a1a1aa; margin-left:auto;">${alert.time}</span>`;
+        recentAlertsList.appendChild(div);
+      });
+    });
+
+    // User info logic (force to Alexandra Deff)
+    document.addEventListener('DOMContentLoaded', function() {
+      var userNameEl = document.getElementById('userName');
+      var userAvatarEl = document.getElementById('userAvatar');
+      var userEmailEl = document.getElementById('userEmail');
+      if (userNameEl) userNameEl.textContent = 'Alexandra Deff';
+      if (userAvatarEl) userAvatarEl.textContent = 'AD';
+      if (userEmailEl) userEmailEl.textContent = 'alexandradeff@mail.com';
+    });
+
+    // Auto-refresh on code update (using EventSource for live reload)
+    if (window.EventSource) {
+      const src = new EventSource('/esbuild');
+      src.onmessage = function (event) {
+        if (event.data === 'reload') {
+          window.location.reload();
+        }
+      };
+    }
+  </script>
+</body>
+</html>

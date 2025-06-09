@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - AiWatchMan</title>
+  <style>
+    body {
+      background: #181c23;
+      color: #f3f4f6;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-container {
+      background: #232733;
+      padding: 40px 32px 32px 32px;
+      border-radius: 16px;
+      box-shadow: 0 4px 32px #000a;
+      width: 340px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .logo {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo span:first-child {
+      font-size: 2.2rem;
+    }
+    .login-container input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 18px;
+      border: none;
+      border-radius: 8px;
+      background: #181c23;
+      color: #f3f4f6;
+      font-size: 1rem;
+      outline: none;
+    }
+    .login-container button {
+      width: 100%;
+      padding: 12px;
+      background: #60a5fa;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .login-container button:hover {
+      background: #2563eb;
+    }
+    .error {
+      color: #f87171;
+      margin-bottom: 12px;
+      font-size: 0.98em;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <form class="login-container" id="loginForm" autocomplete="off">
+    <div class="logo"><span>🦉</span> <span>AiWatchMan</span></div>
+    <div class="error" id="errorMsg">Please enter both username and password.</div>
+    <input type="text" id="username" placeholder="Username" autocomplete="username" />
+    <input type="password" id="password" placeholder="Password" autocomplete="current-password" />
+    <button type="submit">Login</button>
+  </form>
+  <script>
+    document.getElementById('loginForm').onsubmit = function(e) {
+      e.preventDefault();
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value.trim();
+      const error = document.getElementById('errorMsg');
+      if (!user || !pass) {
+        error.style.display = 'block';
+        return;
+      }
+      error.style.display = 'none';
+      // Store username for dashboard (preserve case for display)
+      localStorage.setItem('username', user);
+      window.location.href = 'dashboard.html';
+    };
+  </script>
+</body>
+</html>
